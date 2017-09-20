@@ -10,7 +10,7 @@
 ### 1) Install Tomcat from Binary Disribution, Download required war and jar files
 ```
 # cd /root
-# wget http://redrockdigimark.com/apachemirror/tomcat/tomcat-9/v9.0.0.M22/bin/apache-tomcat-9.0.0.M22.tar.gz
+# wget http://www-eu.apache.org/dist/tomcat/tomcat-9/v9.0.0.M26/bin/apache-tomcat-9.0.0.M26.tar.gz
 # tar -xf apache-tomcat-9.0.0.M22.tar.gz
 # mv apache-tomcat-9.0.0.M22 tomcat
 # cd tomcat
