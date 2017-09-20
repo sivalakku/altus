@@ -11,8 +11,8 @@
 ```
 # cd /root
 # wget http://www-eu.apache.org/dist/tomcat/tomcat-9/v9.0.0.M26/bin/apache-tomcat-9.0.0.M26.tar.gz
-# tar -xf apache-tomcat-9.0.0.M22.tar.gz
-# mv apache-tomcat-9.0.0.M22 tomcat
+# tar -xf apache-tomcat-9.0.0.M26.tar.gz
+# mv apache-tomcat-9.0.0.M26 tomcat
 # cd tomcat
 # cd webapps
 # rm -rf *
