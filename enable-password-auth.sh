@@ -1,7 +1,9 @@
 #!/bin/bash
 
 ### Note: I dont recomend this script in real times, It is only for Lab purpose.
+chattr -i /etc/ssh/sshd_config
 sed -i -e '/#PermitRootLogin/ c PermitRootLogin yes' -e '/^PasswordAuthentication/ c PasswordAuthentication yes' /etc/ssh/sshd_config
+chattr +i /etc/ssh/sshd_config
 echo 'echo -n -e "\e[31mEnter ROOT password: \e[0m"
 read pass
 noc=$(echo $pass |wc -c)
