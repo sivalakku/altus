@@ -54,6 +54,8 @@ LENV() {
 	
 	echo -e "LANG=en_US.utf-8\nLC_ALL=en_US.utf-8" >/etc/environment
 	Print NL Success G
+	wget https://raw.githubusercontent.com/carreerit/altus/master/enable-password-auth.sh -O /sbin/enable-password-auth.sh &>/dev/null
+	chmod +x /sbin/enable-password-auth.sh
 }
 
 if [ `id -u` -ne 0 ]; then 
