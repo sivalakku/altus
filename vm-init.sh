@@ -56,6 +56,12 @@ LENV() {
 	Print NL Success G
 	wget https://raw.githubusercontent.com/carreerit/altus/master/enable-password-auth.sh -O /sbin/enable-password-auth.sh &>/dev/null
 	chmod +x /sbin/enable-password-auth.sh
+	read -p 'Do you want to set the root passsword [Y|n]: ' ans
+	case $ans in 
+		Y|y) /sbin/enable-password-auth.sh ;;
+		n|N) : ;;
+		*) /sbin/enable-password-auth.sh ;;
+	esac
 }
 
 if [ `id -u` -ne 0 ]; then 
