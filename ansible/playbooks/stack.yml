@@ -1,0 +1,65 @@
+- name: Install web server
+  hosts: all
+  tasks:
+    - name: Install web server packages
+      package:
+        name: "{{item}}"
+      with_items:
+        - httpd
+        - httpd-devel
+        - gcc
+        
+    - name: start web service
+      service:
+        name: "httpd"
+        state: started
+        enabled: yes
+        
+        
+- name: Install Tomcat
+  hosts: all
+  vars:
+    URL: "http://www-us.apache.org/dist/tomcat/tomcat-9/v9.0.1/bin/apache-tomcat-9.0.1.tar.gz"
+    TAR_LOC: "/opt/apache-tomcat-9.0.1.tar.gz"
+  tasks:
+    - name: Download Apache Tomcat
+      get_url:
+        url: "{{URL}}"
+        dest: "{{TAR_LOC}}"
+    
+    - name: Extact tar file
+      unarchive:
+        remote_src: yes
+        src: "{{TAR_LOC}}"
+        dest: /opt
+        
+    - name: Install Java
+      package:
+        name: java
+        state: installed
+    
+    - name: Check whether the tomcat is running or not.
+      shell: ps -ef | grep /opt/apache-tomcat-9.0.1 | grep -v grep
+      register: out
+      ignore_errors: yes
+    
+    - name: Start Tomcat
+      shell: nohup /opt/apache-tomcat-9.0.1/bin/startup.sh
+      when: out.rc == 1
+      
+- name: Install DB Server
+  hosts: all
+  tasks:
+    - name: Install MariaDB
+      package:
+        name: "{{item}}"
+        state: installed
+      with_items:
+        - mariadb
+        - mariadb-server
+        
+    - name: Start MariaDB
+      service:
+        name: "mariadb"
+        state: started
+        enabled: yes
