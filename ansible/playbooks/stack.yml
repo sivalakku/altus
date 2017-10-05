@@ -63,3 +63,68 @@
         name: "mariadb"
         state: started
         enabled: yes
+
+- name: Install and configure ModJK
+  hosts: all
+  vars:
+    URL: "http://redrockdigimark.com/apachemirror/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.42-src.tar.gz"
+    DEST: "/opt"
+    
+  tasks:
+    - name: check whether mod_jk.so file exists or not
+      stat:
+        path: /etc/httpd/modules/mod_jk.so
+      register: out
+    
+    - name: Download and extract ModJK
+      unarchive:
+        src: "{{ URL }}"
+        dest: "{{ DEST }}"
+        remote_src: yes
+      when: out.stat.exists == false
+      
+    - name: Compile ModJK
+      shell: ./configure --with-apxs=/usr/bin/apxs && make && make install
+      args:
+        chdir: /opt/tomcat-connectors-1.2.42-src/native
+      when: out.stat.exists == false
+      
+    - name: Copy modjk config files
+      copy:
+        src: /root/ansible/playbooks/files/{{item}}
+        dest: /etc/httpd/conf.d/{{item}}
+      with_items:
+        - modjk.conf
+        - workers.properties
+  
+
+- name: Configure Tomcat with JDBC
+  hosts: all
+  tasks:
+    - name: Download war and jar files
+      get_url:
+        url: "{{item.URL}}"
+        dest: "{{item.dest}}"
+      with_items:
+        - { URL: 'https://github.com/carreerit/cogito/raw/master/appstack/student.war', dest: '/opt/apache-tomcat-9.0.1/webapps/student.war' }
+        - { URL: 'https://github.com/carreerit/cogito/raw/master/appstack/mysql-connector-java-5.1.40.jar', dest: '/opt/apache-tomcat-9.0.1/lib/mysql-connector-java-5.1.40.jar' }
+        
+    - name: Update Context.xml 
+      copy:
+        src: /root/ansible/playbooks/files/context.xml
+        dest: /opt/apache-tomcat-9.0.1/conf/context.xml
+        
+        
+- name: Create DB and Tables
+  hosts: all
+  tasks:
+    - name: copy sql file
+      copy:
+        src: /root/ansible/playbooks/files/student.sql
+        dest: /tmp/student.sql
+        
+    - name: Create DB
+      mysql_db:
+        name: all
+        state: import
+        target: /tmp/student.sql
