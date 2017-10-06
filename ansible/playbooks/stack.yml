@@ -57,6 +57,7 @@
       with_items:
         - mariadb
         - mariadb-server
+        - mariadb-devel
         
     - name: Start MariaDB
       service:
@@ -122,6 +123,18 @@
       copy:
         src: /root/ansible/playbooks/files/student.sql
         dest: /tmp/student.sql
+    
+    - name: Install PIP RPM
+      package:
+        name: "{{item}}" 
+        state: installed
+      with_items:
+        - python-devel
+        - python2-pip
+        
+    - name: Install mysql-python module
+      pip:
+        name: MySQL-python
         
     - name: Create DB
       mysql_db:
